@@ -35,10 +35,11 @@ class HomeView extends GetView<HomeController> {
                   height: 10,
                 ),
                 const SizedBox(height: 20),
-                DropdownButton(
-                  dropdownColor: Colors.white70,
-                  value: controller.selectedPlayer.value,
-                  items: controller.ddl.value.map((String items) {
+                DropdownButtonHideUnderline(
+                  child: DropdownButton(
+                    dropdownColor: Colors.white70,
+                    value: controller.selectedPlayer.value,
+                    items: controller.ddl.value.map((String items) {
             return DropdownMenuItem(
             value: items,
             child: Text(
@@ -46,24 +47,25 @@ class HomeView extends GetView<HomeController> {
             ),
             );
             }).toList(),
-                  onChanged: (value) {
-                    controller.selectedPlayer.value = value!;
-                    switch (value) {
-                      case "Single Player":
-                        Get.toNamed(Routes.SINGLE_PLAYER);
-                        break;
-                      case "Double Player":
-                        Get.toNamed(Routes.SINGLE_PLAYER);
-                        break;
-                    }
-                  },
-                  hint: Container(
-                    alignment: Alignment.centerRight,
-                    width: 210,
-                    child: const Text(
-                      'Select Player',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(backgroundColor: Colors.amber),
+                    onChanged: (value) {
+                      controller.selectedPlayer.value = value!;
+                      switch (value) {
+                        case "Single Player":
+                          Get.toNamed(Routes.SINGLE_PLAYER);
+                          break;
+                        case "Double Player":
+                          Get.toNamed(Routes.SINGLE_PLAYER);
+                          break;
+                      }
+                    },
+                    hint: Container(
+                      alignment: Alignment.centerRight,
+                      width: 210,
+                      child: const Text(
+                        'Select Player',
+                        textAlign: TextAlign.end,
+                        style: TextStyle(backgroundColor: Colors.amber),
+                      ),
                     ),
                   ),
                 ),
