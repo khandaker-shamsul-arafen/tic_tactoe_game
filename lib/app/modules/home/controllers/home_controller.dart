@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 class HomeController extends GetxController {
   //TODO: Implement HomeController
   RxString selectedPlayer = "Single Player".obs;
- RxList<String> ddl = ["Single Player", "Double Player"].obs;
+ RxList<String> ddl = ["Single Player", "Human Player"].obs;
   List<DropdownMenuItem<String>> dropDownItem() {
 
     return ddl.map((String items) {
