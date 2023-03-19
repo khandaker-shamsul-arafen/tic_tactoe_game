@@ -7,5 +7,5 @@ class TicTacButton {
   Color bg;
 
   TicTacButton(
-      {this.id, this.txt = " ", this.enable = true, this.bg = Colors.grey});
+      {this.id, this.txt = "", this.enable = true, this.bg = Colors.grey});
 }

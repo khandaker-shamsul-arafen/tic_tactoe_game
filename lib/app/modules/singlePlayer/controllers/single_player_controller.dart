@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -6,7 +8,7 @@ import '../../../widget/tic_tac_button.dart';
 
 class SinglePlayerController extends GetxController {
   //TODO: Implement SinglePlayerController
-  //late List<TicTacButton> tictacButtonList;
+
   var tictacButtonList = <TicTacButton>[].obs;
   var player1;
   var player2;
@@ -45,13 +47,11 @@ class SinglePlayerController extends GetxController {
       tictacButtonList[index].bg = Colors.purple.shade400;
       activeplayer = 2;
       player1.add(tictacButtonList[index].id);
-
       tictacButtonList.refresh();
       debugPrint("Player 1 Index ${player1.length}");
     } else if (activeplayer == 2) {
       tictacButtonList[index].txt = '0';
       tictacButtonList[index].bg = Colors.cyan.shade400;
-
       activeplayer = 1;
       player2.add(tictacButtonList[index].id);
       tictacButtonList.refresh();
@@ -61,14 +61,42 @@ class SinglePlayerController extends GetxController {
     tictacButtonList[index].enable = false;
 
     int winnerName = winner(context);
-    // if(winnerName==-1){
-    //   if(tictacButtonList.every((p) => p.txt!="")){
-    //     showDialog(context: context,
-    //         builder: (_)=>CustomDialog("Game tied", "Press the reset button to star again",));
-    //   }else{
-    //   //  activeplayer==2?autoPlay():null;
-    //   }
-    // }
+    debugPrint("Winnername$winnerName");
+
+    if (winnerName == -1) {
+      if (tictacButtonList.every((p) => p.txt != "")) {
+        for (int i = 0; i < tictacButtonList.length; i++) {
+          debugPrint("dgdgd${tictacButtonList[i].txt}");
+        }
+
+        showDialog(
+            context: context,
+            builder: (_) => CustomDialog(
+                  "Game tied",
+                  "Press the reset button to star again",
+                ));
+      } else {
+        debugPrint("InSide WinnerName");
+        activeplayer == 2 ? autoPlay(context) : null;
+      }
+    }
+  }
+
+  void autoPlay(context) {
+    debugPrint("OutSide WinnerName");
+    var emptyCells = [];
+    var list = List.generate(9, (i) => i + 1);
+    for (var cellID in list) {
+      if (!(player1.contains(cellID) || player2.contains(cellID))) {
+        emptyCells.add(cellID);
+      }
+    }
+
+    var r = Random();
+    var randIndex = r.nextInt(emptyCells.length - 1);
+    var cellID = emptyCells[randIndex];
+    int i = tictacButtonList.indexWhere((p) => p.id == cellID);
+    startGame(i, context);
   }
 
   int winner(context) {
@@ -136,14 +164,18 @@ class SinglePlayerController extends GetxController {
         showDialog(
             context: context,
             builder: (_) => CustomDialog(
-                "Player 1 won", "Press the reset button to start again"));
+                  "Player 1 won",
+                  "Press the reset button to start again",
+                ));
       } else {
         debugPrint("Winner player 2");
         // custom dailog
         showDialog(
             context: context,
             builder: (_) => CustomDialog(
-                "Player 2 won", "Press the reset button to start again"));
+                  "Player 2 won",
+                  "Press the reset button to start again",
+                ));
       }
     }
 
@@ -152,6 +184,11 @@ class SinglePlayerController extends GetxController {
 
   resetGame(context) {
     if (Navigator.canPop(context)) Navigator.pop(context);
+    // tictacButtonList.clear();
+    // player2.clear();
+    // player1.clear();
+    debugPrint("Player 2 Index ${player2.length}");
+    debugPrint("Player 2 Index ${player2.length}");
     tictacButtonList = addButton();
   }
 

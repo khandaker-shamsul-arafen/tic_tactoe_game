@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../modules/singlePlayer/controllers/single_player_controller.dart';
+
 class CustomDialog extends StatelessWidget {
   final title;
   final content;
 
-  // final VoidCallback callback;
-  //final actionText;
+  //final VoidCallback callback;
+  final actionText;
 
-  const CustomDialog(
-    this.title,
-    this.content,
-    //this.actionText,
-    //  this.callback,[this.actionText="reset"]
-  );
+  CustomDialog(this.title, this.content,
+      //this.callback,
+      [this.actionText = "reset"]);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +19,7 @@ class CustomDialog extends StatelessWidget {
       title: Text(title),
       content: Text(content),
       actions: [
-        //  ElevatedButton(onPressed: callback, child: Text(actionText))
+        //   ElevatedButton(onPressed: (){SinglePlayerController().resetGame(context);}, child: Text(actionText))
       ],
     );
   }
