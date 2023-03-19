@@ -36,7 +36,7 @@ class SinglePlayerView extends GetView<SinglePlayerController> {
                         child: ElevatedButton(
                           onPressed: () {
                             controller.tictacButtonList[index].enable
-                                ? controller.startGame(index)
+                                ? controller.startGame(index, context)
                                 : null;
                           },
                           style: ElevatedButton.styleFrom(
@@ -54,7 +54,18 @@ class SinglePlayerView extends GetView<SinglePlayerController> {
                       );
                     },
                   ),
-                )
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    controller.resetGame(context);
+                  },
+                  style: ElevatedButton.styleFrom(foregroundColor: Colors.red),
+                  //resetGame2,
+                  child: const Text(
+                    "Reset",
+                    style: TextStyle(color: Colors.black, fontSize: 20),
+                  ),
+                ),
               ],
             ),
           );

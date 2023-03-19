@@ -17,7 +17,7 @@ class HomeView extends GetView<HomeController> {
       ),
       body: Obx(() {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0.0,vertical: 0),
+          padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -25,11 +25,7 @@ class HomeView extends GetView<HomeController> {
               children: <Widget>[
                 const Text(
                   "Please Select Your Mood",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600
-
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(
                   height: 10,
@@ -40,13 +36,13 @@ class HomeView extends GetView<HomeController> {
                     dropdownColor: Colors.white70,
                     value: controller.selectedPlayer.value,
                     items: controller.ddl.value.map((String items) {
-            return DropdownMenuItem(
-            value: items,
-            child: Text(
-            items,
-            ),
-            );
-            }).toList(),
+                      return DropdownMenuItem(
+                        value: items,
+                        child: Text(
+                          items,
+                        ),
+                      );
+                    }).toList(),
                     onChanged: (value) {
                       controller.selectedPlayer.value = value!;
                       switch (value) {
@@ -69,7 +65,6 @@ class HomeView extends GetView<HomeController> {
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
