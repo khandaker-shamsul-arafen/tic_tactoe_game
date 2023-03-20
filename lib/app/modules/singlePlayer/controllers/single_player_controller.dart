@@ -13,6 +13,10 @@ class SinglePlayerController extends GetxController {
   var player1;
   var player2;
   var activeplayer;
+  bool check = false;
+  int x = 1,
+      y = 1,
+      z = 1;
 
   final count = 0.obs;
 
@@ -47,6 +51,7 @@ class SinglePlayerController extends GetxController {
       tictacButtonList[index].bg = Colors.purple.shade400;
       activeplayer = 2;
       player1.add(tictacButtonList[index].id);
+
       tictacButtonList.refresh();
       debugPrint("Player 1 Index ${player1.length}");
     } else if (activeplayer == 2) {
@@ -76,14 +81,13 @@ class SinglePlayerController extends GetxController {
                   "Press the reset button to star again",
                 ));
       } else {
-        debugPrint("InSide WinnerName");
+        // debugPrint("InSide WinnerName");
         activeplayer == 2 ? autoPlay(context) : null;
       }
     }
   }
 
   void autoPlay(context) {
-    debugPrint("OutSide WinnerName");
     var emptyCells = [];
     var list = List.generate(9, (i) => i + 1);
     for (var cellID in list) {
@@ -96,7 +100,28 @@ class SinglePlayerController extends GetxController {
     var randIndex = r.nextInt(emptyCells.length - 1);
     var cellID = emptyCells[randIndex];
     int i = tictacButtonList.indexWhere((p) => p.id == cellID);
-    startGame(i, context);
+
+    // if (player1.contains(7)) {
+    //   debugPrint("OutSide WinnerName");
+
+    //   check=false;
+    // }
+    if (player1.contains(7) && x == 1) {
+      startGame(5, context);
+      x = 0;
+    } else if (player1.contains(2) && y == 1) {
+      debugPrint("OutSide WinnerName");
+      startGame(0, context);
+      y = 0;
+    } else if (player1.contains(5) && z == 1) {
+      debugPrint("OutSide WinnerName");
+      startGame(7, context);
+      z = 0;
+    } else {
+      startGame(i, context);
+    }
+
+    //  debugPrint("player1[6]${player1[6]}");
   }
 
   int winner(context) {
@@ -184,9 +209,7 @@ class SinglePlayerController extends GetxController {
 
   resetGame(context) {
     if (Navigator.canPop(context)) Navigator.pop(context);
-    // tictacButtonList.clear();
-    // player2.clear();
-    // player1.clear();
+
     debugPrint("Player 2 Index ${player2.length}");
     debugPrint("Player 2 Index ${player2.length}");
     tictacButtonList = addButton();

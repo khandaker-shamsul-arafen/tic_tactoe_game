@@ -36,7 +36,7 @@ class SinglePlayerView extends GetView<SinglePlayerController> {
                         child: ElevatedButton(
                           onPressed: () {
                             controller.tictacButtonList[index].enable
-                                ? controller.startGame(index, context)
+                                ? controller.autoPlay(context)
                                 : null;
                           },
                           style: ElevatedButton.styleFrom(
