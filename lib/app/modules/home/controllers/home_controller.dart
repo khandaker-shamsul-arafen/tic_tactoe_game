@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 class HomeController extends GetxController {
   //TODO: Implement HomeController
   RxString selectedPlayer = "Single Player".obs;
- RxList<String> ddl = ["Single Player", "Human Player"].obs;
-  List<DropdownMenuItem<String>> dropDownItem() {
+  RxList<String> ddl = ["Single Player", "Human Player"].obs;
 
+  List<DropdownMenuItem<String>> dropDownItem() {
     return ddl.map((String items) {
       return DropdownMenuItem(
         value: items,
@@ -15,25 +15,7 @@ class HomeController extends GetxController {
         ),
       );
     }).toList();
-
   }
 
   final count = 0.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

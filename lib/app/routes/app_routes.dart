@@ -3,12 +3,16 @@ part of 'app_pages.dart';
 
 abstract class Routes {
   Routes._();
+
   static const HOME = _Paths.HOME;
   static const SINGLE_PLAYER = _Paths.SINGLE_PLAYER;
+  static const HUMAN = _Paths.HUMAN;
 }
 
 abstract class _Paths {
   _Paths._();
+
   static const HOME = '/home';
   static const SINGLE_PLAYER = '/single-player';
+  static const HUMAN = '/human';
 }

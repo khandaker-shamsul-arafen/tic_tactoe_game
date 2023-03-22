@@ -49,8 +49,8 @@ class HomeView extends GetView<HomeController> {
                         case "Single Player":
                           Get.toNamed(Routes.SINGLE_PLAYER);
                           break;
-                        case "Double Player":
-                          Get.toNamed(Routes.SINGLE_PLAYER);
+                        case "Human Player":
+                          Get.toNamed(Routes.HUMAN);
                           break;
                       }
                     },

@@ -3,227 +3,200 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../widget/custom_dialoge.dart';
-import '../../../widget/tic_tac_button.dart';
-
 class SinglePlayerController extends GetxController {
   //TODO: Implement SinglePlayerController
 
-  var tictacButtonList = <TicTacButton>[].obs;
-  var player1;
-  var player2;
-  var activeplayer;
-  bool check = false;
-  int x = 1,
-      y = 1,
-      z = 1;
+  RxList<String>? board = <String>[].obs;
+  bool? gameOver;
+  String? gameStatus;
+  String? player;
+  String? computer;
 
-  final count = 0.obs;
+  // late Random random;
 
   @override
-  void onInit() {
-    tictacButtonList = addButton();
+  void onInit() async {
+    // print("call onInit");  // this line not printing
+    newGame();
+    handleComputerMove();
     super.onInit();
   }
 
-  RxList<TicTacButton> addButton() {
-    player1 = [];
-    player2 = [];
-    activeplayer = 1;
-
-    RxList<TicTacButton> tictacButtons = [
-      TicTacButton(id: 1),
-      TicTacButton(id: 2),
-      TicTacButton(id: 3),
-      TicTacButton(id: 4),
-      TicTacButton(id: 5),
-      TicTacButton(id: 6),
-      TicTacButton(id: 7),
-      TicTacButton(id: 8),
-      TicTacButton(id: 9),
-    ].obs;
-    return tictacButtons;
+  void newGame() {
+    board!.value = List.filled(9, '');
+    gameOver = false;
+    gameStatus = "Computer's turn";
+    player = 'O';
+    computer = 'X';
+    //  random = Random();
   }
 
-  void startGame(int index, context) {
-    if (activeplayer == 1) {
-      tictacButtonList[index].txt = 'x';
-      tictacButtonList[index].bg = Colors.purple.shade400;
-      activeplayer = 2;
-      player1.add(tictacButtonList[index].id);
-
-      tictacButtonList.refresh();
-      debugPrint("Player 1 Index ${player1.length}");
-    } else if (activeplayer == 2) {
-      tictacButtonList[index].txt = '0';
-      tictacButtonList[index].bg = Colors.cyan.shade400;
-      activeplayer = 1;
-      player2.add(tictacButtonList[index].id);
-      tictacButtonList.refresh();
-
-      debugPrint("Player 2 Index ${player2.length}");
-    }
-    tictacButtonList[index].enable = false;
-
-    int winnerName = winner(context);
-    debugPrint("Winnername$winnerName");
-
-    if (winnerName == -1) {
-      if (tictacButtonList.every((p) => p.txt != "")) {
-        for (int i = 0; i < tictacButtonList.length; i++) {
-          debugPrint("dgdgd${tictacButtonList[i].txt}");
+  void handleComputerMove() {
+    if (!gameOver!) {
+      int bestScore = -1000;
+      int index = -1;
+      for (int i = 0; i < 9; i++) {
+        if (board![i] == '') {
+          board![i] = computer!;
+          int score = minimax(board!, 5, false, computer!);
+          board![i] = '';
+          if (score > bestScore) {
+            bestScore = score;
+            index = i;
+          }
         }
+      }
 
-        showDialog(
-            context: context,
-            builder: (_) => CustomDialog(
-                  "Game tied",
-                  "Press the reset button to star again",
-                ));
+      board![index] = computer!;
+      if (checkWin(board!, computer!)) {
+        gameOver = true;
+        gameStatus = "Computer wins";
+      } else if (isBoardFull()) {
+        gameOver = true;
+        gameStatus = "Draw";
       } else {
-        // debugPrint("InSide WinnerName");
-        activeplayer == 2 ? autoPlay(context) : null;
+        gameStatus = "Player X's turn";
       }
     }
   }
 
-  void autoPlay(context) {
-    var emptyCells = [];
-    var list = List.generate(9, (i) => i + 1);
-    for (var cellID in list) {
-      if (!(player1.contains(cellID) || player2.contains(cellID))) {
-        emptyCells.add(cellID);
+  bool isBoardFull() {
+    for (int i = 0; i < (board?.length ?? 0); i++) {
+      if (board![i] == '') {
+        return false;
       }
     }
+    return true;
+  }
 
-    var r = Random();
-    var randIndex = r.nextInt(emptyCells.length - 1);
-    var cellID = emptyCells[randIndex];
-    int i = tictacButtonList.indexWhere((p) => p.id == cellID);
+  int minimax(
+      List<String> board, int depth, bool isMaximizingPlayer, String computer) {
+    if (checkWin(board, computer)) {
+      //   debugPrint("Win");
+      return 10;
+    }
+    if (checkWin(board, getOtherPlayer(computer))) {
+      //debugPrint("other Player");
+      return -10;
+    }
 
-    // if (player1.contains(7)) {
-    //   debugPrint("OutSide WinnerName");
-
-    //   check=false;
-    // }
-    if (player1.contains(7) && x == 1) {
-      startGame(5, context);
-      x = 0;
-    } else if (player1.contains(2) && y == 1) {
-      debugPrint("OutSide WinnerName");
-      startGame(0, context);
-      y = 0;
-    } else if (player1.contains(5) && z == 1) {
-      debugPrint("OutSide WinnerName");
-      startGame(7, context);
-      z = 0;
+    if (isMaximizingPlayer) {
+      int bestScore = -1000;
+      for (int i = 0; i < 9; i++) {
+        //  debugPrint("inside loop");
+        if (board[i] == '') {
+          board[i] = computer;
+          int score = minimax(board, depth + 1, false, computer);
+          board[i] = '';
+          bestScore = max(score, bestScore);
+          //  debugPrint("max Score $bestScore");
+        }
+      }
+      return bestScore - depth;
     } else {
-      startGame(i, context);
+      int bestScore = 1000;
+      for (int i = 0; i < 9; i++) {
+        //  debugPrint("else Inside loop ");
+        if (board[i] == '') {
+          board[i] = getOtherPlayer(computer);
+          int score = minimax(board, depth + 1, true, computer);
+          board[i] = '';
+          bestScore = min(score, bestScore);
+          // debugPrint("min Score $bestScore");
+        }
+      }
+      return bestScore + depth;
     }
-
-    //  debugPrint("player1[6]${player1[6]}");
   }
 
-  int winner(context) {
-    var winner = -1;
-    if (player1.contains(1) && player1.contains(2) && player1.contains(3)) {
-      winner = 1;
+  int evaluateBoard(List<String> board, String computer) {
+    if (checkWin(board, computer)) {
+      return 100;
+    } else if (checkWin(board, getOtherPlayer(computer))) {
+      return -100;
+    } else {
+      int numComputerSymbols = 0;
+      int numHumanSymbols = 0;
+      for (int i = 0; i < 9; i++) {
+        if (board[i] == computer) {
+          numComputerSymbols++;
+        } else if (board[i] != ' ') {
+          numHumanSymbols++;
+        }
+      }
+      return numComputerSymbols - numHumanSymbols;
     }
-    if (player2.contains(1) && player2.contains(2) && player2.contains(3)) {
-      winner = 2;
-    }
+  }
 
-    if (player1.contains(4) && player1.contains(5) && player1.contains(6)) {
-      winner = 1;
-    }
-    if (player2.contains(4) && player2.contains(5) && player2.contains(6)) {
-      winner = 2;
-    }
+  String getOtherPlayer(String computer) {
+    return computer == 'X' ? 'O' : 'X';
+  }
 
-    if (player1.contains(7) && player1.contains(8) && player1.contains(9)) {
-      winner = 1;
-    }
-    if (player2.contains(7) && player2.contains(8) && player2.contains(9)) {
-      winner = 2;
-    }
+  List<int> getAvailableSpots(List<String> board) {
+    List<int> availableSpots = [];
 
-    if (player1.contains(1) && player1.contains(4) && player1.contains(7)) {
-      winner = 1;
-    }
-    if (player2.contains(1) && player2.contains(4) && player2.contains(7)) {
-      winner = 2;
-    }
-
-    if (player1.contains(2) && player1.contains(5) && player1.contains(8)) {
-      winner = 1;
-    }
-    if (player2.contains(2) && player2.contains(5) && player2.contains(8)) {
-      winner = 2;
-    }
-
-    if (player1.contains(6) && player1.contains(3) && player1.contains(9)) {
-      winner = 1;
-    }
-    if (player2.contains(6) && player2.contains(3) && player2.contains(9)) {
-      winner = 2;
-    }
-
-    if (player1.contains(1) && player1.contains(5) && player1.contains(9)) {
-      winner = 1;
-    }
-    if (player2.contains(1) && player2.contains(5) && player2.contains(9)) {
-      winner = 2;
-    }
-
-    if (player1.contains(5) && player1.contains(3) && player1.contains(7)) {
-      winner = 1;
-    }
-    if (player2.contains(5) && player2.contains(3) && player2.contains(7)) {
-      winner = 2;
-    }
-
-    if (winner != -1) {
-      if (winner == 1) {
-        debugPrint("Winner player 1");
-        // Custom dialog
-        showDialog(
-            context: context,
-            builder: (_) => CustomDialog(
-                  "Player 1 won",
-                  "Press the reset button to start again",
-                ));
-      } else {
-        debugPrint("Winner player 2");
-        // custom dailog
-        showDialog(
-            context: context,
-            builder: (_) => CustomDialog(
-                  "Player 2 won",
-                  "Press the reset button to start again",
-                ));
+    for (int i = 0; i < board.length; i++) {
+      if (board[i] == '') {
+        availableSpots.add(i);
       }
     }
 
-    return winner;
+    return availableSpots;
+  }
+
+  bool checkWin(List<String> board, String player) {
+    // Check rows
+    for (int i = 0; i < 9; i += 3) {
+      if (board[i] == player &&
+          board[i + 1] == player &&
+          board[i + 2] == player) {
+        return true;
+      }
+    }
+
+    // Check columns
+    for (int i = 0; i < 3; i++) {
+      if (board[i] == player &&
+          board[i + 3] == player &&
+          board[i + 6] == player) {
+        return true;
+      }
+    }
+
+    // Check diagonals
+    if (board[0] == player && board[4] == player && board[8] == player) {
+      return true;
+    }
+    if (board[2] == player && board[4] == player && board[6] == player) {
+      return true;
+    }
+
+    return false;
+  }
+
+  void handlePlayerMove(int index) {
+    if (!gameOver! && board![index] == '') {
+      board![index] = player!;
+      if (checkWin(board!, player!)) {
+        gameOver = true;
+        gameStatus = "You win!";
+      } else if (isBoardFull()) {
+        gameOver = true;
+        gameStatus = "Draw";
+      } else {
+        gameStatus = "Computer's turn";
+        handleComputerMove();
+      }
+    }
+  }
+
+  void makeMove(int index) {
+    if (board![index] == '') {
+      handlePlayerMove(index);
+    }
   }
 
   resetGame(context) {
     if (Navigator.canPop(context)) Navigator.pop(context);
-
-    debugPrint("Player 2 Index ${player2.length}");
-    debugPrint("Player 2 Index ${player2.length}");
-    tictacButtonList = addButton();
   }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

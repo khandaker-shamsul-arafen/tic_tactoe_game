@@ -10,65 +10,73 @@ class SinglePlayerView extends GetView<SinglePlayerController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('SinglePlayerView'),
-          centerTitle: true,
-        ),
-        body: Obx(() {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Expanded(
-                  child: GridView.builder(
-                    itemCount: controller.tictacButtonList.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            mainAxisSpacing: 7,
-                            crossAxisSpacing: 7,
-                            childAspectRatio: 1),
-                    itemBuilder: (BuildContext context, int index) {
-                      debugPrint("${controller.tictacButtonList[index]}");
-                      return SizedBox(
-                        height: 100,
-                        width: 100,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            controller.tictacButtonList[index].enable
-                                ? controller.autoPlay(context)
-                                : null;
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                controller.tictacButtonList[index].bg,
-                            disabledBackgroundColor:
-                                controller.tictacButtonList[index].bg,
-                          ),
-                          child: Text(
-                            controller.tictacButtonList[index].txt,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 20),
+      appBar: AppBar(
+        title: const Text('Tic Tac Toe'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 500,
+              width: 500,
+              child: Obx(() {
+                return GridView.builder(
+                  // use GridView to display the game board
+                  padding: const EdgeInsets.all(20),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                  ),
+                  itemCount: controller.board!.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      // wrap each cell with GestureDetector to handle user input
+                      onTap: () {
+                        controller.makeMove(
+                            index); // handle user input by calling the game logic
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: controller.board![index] == 'O'
+                              ? Colors.blue
+                              : controller.board![index] == 'X'
+                                  ? Colors.red
+                                  : Colors.grey,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          controller.board![index],
+                          style: TextStyle(
+                            fontSize: 40,
+                            color: controller.board![index] == 'X' ||
+                                    controller.board![index] == 'O'
+                                ? Colors.white
+                                : Colors.black,
                           ),
                         ),
-                      );
-                    },
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    controller.resetGame(context);
+                      ),
+                    );
                   },
-                  style: ElevatedButton.styleFrom(foregroundColor: Colors.red),
-                  //resetGame2,
-                  child: const Text(
-                    "Reset",
-                    style: TextStyle(color: Colors.black, fontSize: 20),
-                  ),
-                ),
-              ],
+                );
+              }),
             ),
-          );
-        }));
+            ElevatedButton(
+              onPressed: () {
+                controller.resetGame(context);
+              },
+              style: ElevatedButton.styleFrom(foregroundColor: Colors.red),
+              //resetGame2,
+              child: const Text(
+                "Reset",
+                style: TextStyle(color: Colors.black, fontSize: 20),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

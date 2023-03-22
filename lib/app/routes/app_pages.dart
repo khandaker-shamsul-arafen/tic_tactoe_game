@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/human/bindings/human_binding.dart';
+import '../modules/human/views/human_view.dart';
 import '../modules/singlePlayer/bindings/single_player_binding.dart';
 import '../modules/singlePlayer/views/single_player_view.dart';
 
@@ -22,6 +24,11 @@ class AppPages {
       name: _Paths.SINGLE_PLAYER,
       page: () => const SinglePlayerView(),
       binding: SinglePlayerBinding(),
+    ),
+    GetPage(
+      name: _Paths.HUMAN,
+      page: () => const HumanView(),
+      binding: HumanBinding(),
     ),
   ];
 }
