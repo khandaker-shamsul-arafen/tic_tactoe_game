@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../routes/app_pages.dart';
 import '../../../widget/custom_dialoge.dart';
 
 class SinglePlayerController extends GetxController {
@@ -61,6 +62,12 @@ class SinglePlayerController extends GetxController {
       } else if (isBoardFull()) {
         gameOver = true;
         gameStatus = "Draw";
+        showDialog(
+            context: context,
+            builder: (_) => CustomDialog(
+                  "Match Draw",
+                  "Press the reset button to start again",
+                ));
       } else {
         gameStatus = "Player X's turn";
       }
@@ -216,6 +223,13 @@ class SinglePlayerController extends GetxController {
   }
 
   resetGame(context) {
+    // if (Navigator.canPop(context)) Navigator.pop(context);
+    onInit();
+    // board?.clear();
+    // Get.toNamed(Routes.SINGLE_PLAYER);
+  }
+
+  modeChange(context) {
     if (Navigator.canPop(context)) Navigator.pop(context);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../routes/app_pages.dart';
 import '../../../widget/custom_dialoge.dart';
 import '../../../widget/tic_tac_button.dart';
 
@@ -40,7 +41,7 @@ class HumanController extends GetxController {
 
   void startGame(int index, context) {
     if (activeplayer == 1) {
-      tictacButtonList[index].txt = 'x';
+      tictacButtonList[index].txt = 'X';
       tictacButtonList[index].bg = Colors.red;
       activeplayer = 2;
       player1.add(tictacButtonList[index].id);
@@ -48,7 +49,7 @@ class HumanController extends GetxController {
       tictacButtonList.refresh();
       debugPrint("Player 1 Index ${player1.length}");
     } else if (activeplayer == 2) {
-      tictacButtonList[index].txt = '0';
+      tictacButtonList[index].txt = 'O';
       tictacButtonList[index].bg = Colors.blue;
       activeplayer = 1;
       player2.add(tictacButtonList[index].id);
@@ -70,7 +71,7 @@ class HumanController extends GetxController {
         showDialog(
             context: context,
             builder: (_) => CustomDialog(
-                  "Game tied",
+              "Match Draw",
                   "Press the reset button to star again",
                 ));
       }
@@ -161,10 +162,16 @@ class HumanController extends GetxController {
   }
 
   resetGame(context) {
-    if (Navigator.canPop(context)) Navigator.pop(context);
+    // if (Navigator.canPop(context)) Navigator.pop(context);
 
-    debugPrint("Player 2 Index ${player2.length}");
-    debugPrint("Player 2 Index ${player2.length}");
-    tictacButtonList = addButton();
+    // Get.toNamed(Routes.HUMAN);
+    tictacButtonList.clear();
+    onInit();
+
+    //tictacButtonList = addButton();
+  }
+
+  modeChange(context) {
+    if (Navigator.canPop(context)) Navigator.pop(context);
   }
 }

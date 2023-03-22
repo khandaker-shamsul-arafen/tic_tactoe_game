@@ -11,15 +11,17 @@ class HumanView extends GetView<HumanController> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('SinglePlayerView'),
+          title: const Text('Play  With  Human'),
           centerTitle: true,
         ),
         body: Obx(() {
           return Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
-                Expanded(
+                SizedBox(
+                  width: 500,
+                  height: 500,
                   child: GridView.builder(
                     itemCount: controller.tictacButtonList.length,
                     gridDelegate:
@@ -40,6 +42,8 @@ class HumanView extends GetView<HumanController> {
                                 : null;
                           },
                           style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0)),
                             backgroundColor:
                                 controller.tictacButtonList[index].bg,
                             disabledBackgroundColor:
@@ -48,23 +52,41 @@ class HumanView extends GetView<HumanController> {
                           child: Text(
                             controller.tictacButtonList[index].txt,
                             style: const TextStyle(
-                                color: Colors.white, fontSize: 20),
+                                color: Colors.white, fontSize: 40),
                           ),
                         ),
                       );
                     },
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    controller.resetGame(context);
-                  },
-                  style: ElevatedButton.styleFrom(foregroundColor: Colors.red),
-                  //resetGame2,
-                  child: const Text(
-                    "Reset",
-                    style: TextStyle(color: Colors.black, fontSize: 20),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        controller.resetGame(context);
+                      },
+                      style:
+                          ElevatedButton.styleFrom(foregroundColor: Colors.red),
+                      //resetGame2,
+                      child: const Text(
+                        "Reset",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        controller.modeChange(context);
+                      },
+                      style:
+                          ElevatedButton.styleFrom(foregroundColor: Colors.red),
+                      //resetGame2,
+                      child: const Text(
+                        "Mood",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
