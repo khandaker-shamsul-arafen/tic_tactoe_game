@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../widget/custom_dialoge.dart';
+
 class SinglePlayerController extends GetxController {
   //TODO: Implement SinglePlayerController
 
@@ -18,7 +20,7 @@ class SinglePlayerController extends GetxController {
   void onInit() async {
     // print("call onInit");  // this line not printing
     newGame();
-    handleComputerMove();
+    handleComputerMove(Get.context);
     super.onInit();
   }
 
@@ -28,10 +30,9 @@ class SinglePlayerController extends GetxController {
     gameStatus = "Computer's turn";
     player = 'O';
     computer = 'X';
-    //  random = Random();
   }
 
-  void handleComputerMove() {
+  void handleComputerMove(context) {
     if (!gameOver!) {
       int bestScore = -1000;
       int index = -1;
@@ -51,6 +52,12 @@ class SinglePlayerController extends GetxController {
       if (checkWin(board!, computer!)) {
         gameOver = true;
         gameStatus = "Computer wins";
+        showDialog(
+            context: context,
+            builder: (_) => CustomDialog(
+                  "Computer won",
+                  "Press the reset button to start again",
+                ));
       } else if (isBoardFull()) {
         gameOver = true;
         gameStatus = "Draw";
@@ -174,25 +181,37 @@ class SinglePlayerController extends GetxController {
     return false;
   }
 
-  void handlePlayerMove(int index) {
+  void handlePlayerMove(int index, context) {
     if (!gameOver! && board![index] == '') {
       board![index] = player!;
       if (checkWin(board!, player!)) {
         gameOver = true;
         gameStatus = "You win!";
+        showDialog(
+            context: context,
+            builder: (_) => CustomDialog(
+                  "Human won",
+                  "Press the reset button to start again",
+                ));
       } else if (isBoardFull()) {
         gameOver = true;
         gameStatus = "Draw";
+        showDialog(
+            context: context,
+            builder: (_) => CustomDialog(
+                  "Match Draw",
+                  "Press the reset button to start again",
+                ));
       } else {
         gameStatus = "Computer's turn";
-        handleComputerMove();
+        handleComputerMove(context);
       }
     }
   }
 
-  void makeMove(int index) {
+  void makeMove(int index, BuildContext context) {
     if (board![index] == '') {
-      handlePlayerMove(index);
+      handlePlayerMove(index, context);
     }
   }
 

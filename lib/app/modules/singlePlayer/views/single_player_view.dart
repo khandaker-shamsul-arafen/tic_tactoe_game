@@ -25,17 +25,17 @@ class SinglePlayerView extends GetView<SinglePlayerController> {
                   // use GridView to display the game board
                   padding: const EdgeInsets.all(20),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                  ),
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 1),
                   itemCount: controller.board!.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       // wrap each cell with GestureDetector to handle user input
                       onTap: () {
-                        controller.makeMove(
-                            index); // handle user input by calling the game logic
+                        controller.makeMove(index,
+                            context); // handle user input by calling the game logic
                       },
                       child: Container(
                         alignment: Alignment.center,
