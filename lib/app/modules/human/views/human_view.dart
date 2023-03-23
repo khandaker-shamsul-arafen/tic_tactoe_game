@@ -1,3 +1,4 @@
+import 'package:connection_notifier/connection_notifier.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -15,80 +16,97 @@ class HumanView extends GetView<HumanController> {
           centerTitle: true,
         ),
         body: Obx(() {
-          return Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                SizedBox(
-                  width: 500,
-                  height: 500,
-                  child: GridView.builder(
-                    itemCount: controller.tictacButtonList.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            mainAxisSpacing: 10,
-                            crossAxisSpacing: 10,
-                            childAspectRatio: 1),
-                    itemBuilder: (BuildContext context, int index) {
-                      debugPrint("${controller.tictacButtonList[index]}");
-                      return SizedBox(
-                        height: 100,
-                        width: 100,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            controller.tictacButtonList[index].enable
-                                ? controller.startGame(index, context)
-                                : null;
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0)),
-                            backgroundColor:
-                                controller.tictacButtonList[index].bg,
-                            disabledBackgroundColor:
-                                controller.tictacButtonList[index].bg,
+          return ConnectionNotifierToggler(
+            onConnectionStatusChanged: (connected) {
+              /// that means it is still in the initialization phase.
+              if (connected == null) return;
+              print(connected);
+            },
+            connected: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: 500,
+                    height: 500,
+                    child: GridView.builder(
+                      itemCount: controller.tictacButtonList.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10,
+                              childAspectRatio: 1),
+                      itemBuilder: (BuildContext context, int index) {
+                        debugPrint("${controller.tictacButtonList[index]}");
+                        return SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              controller.tictacButtonList[index].enable
+                                  ? controller.startGame(index, context)
+                                  : null;
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0)),
+                              backgroundColor:
+                                  controller.tictacButtonList[index].bg,
+                              disabledBackgroundColor:
+                                  controller.tictacButtonList[index].bg,
+                            ),
+                            child: Text(
+                              controller.tictacButtonList[index].txt,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 40),
+                            ),
                           ),
-                          child: Text(
-                            controller.tictacButtonList[index].txt,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 40),
-                          ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        controller.resetGame(context);
-                      },
-                      style:
-                          ElevatedButton.styleFrom(foregroundColor: Colors.red),
-                      //resetGame2,
-                      child: const Text(
-                        "Reset",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          controller.resetGame(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.red),
+                        //resetGame2,
+                        child: const Text(
+                          "Reset",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
                       ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        controller.modeChange(context);
-                      },
-                      style:
-                          ElevatedButton.styleFrom(foregroundColor: Colors.red),
-                      //resetGame2,
-                      child: const Text(
-                        "Mood",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          controller.modeChange(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.red),
+                        //resetGame2,
+                        child: const Text(
+                          "Mood",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            disconnected: const AlertDialog(
+              backgroundColor: Colors.red,
+              content: Text(
+                "Please check your internet connection.",
+                style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 20,
+                    color: Colors.white),
+              ),
             ),
           );
         }));
