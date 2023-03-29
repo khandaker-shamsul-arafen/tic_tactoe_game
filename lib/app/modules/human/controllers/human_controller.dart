@@ -1,31 +1,41 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../routes/app_pages.dart';
 import '../../../widget/custom_dialoge.dart';
 import '../../../widget/tic_tac_button.dart';
 
 class HumanController extends GetxController {
   //TODO: Implement HumanController
-  var tictacButtonList = <TicTacButton>[].obs;
-  var player1;
-  var player2;
-  var activeplayer;
-  bool check = false;
-  int x = 1, y = 1, z = 1;
+  RxList ticTacButtonList = <TicTacButton>[].obs;
+
+  //Stream collectionStream = FirebaseFirestore.instance.collection('board').snapshots();
+//  Stream documentStream = FirebaseFirestore.instance.collection('user').doc('player').snapshots(); //read Option
+  CollectionReference users = FirebaseFirestore.instance.collection('user');
+  CollectionReference board = FirebaseFirestore.instance.collection('board'); //Write Option
+  final Stream<QuerySnapshot> _usersStream =
+      FirebaseFirestore.instance.collection('users').snapshots();
+
+  int activePlayer = 0;
+  int winnerCheck = 0;
 
   @override
   void onInit() {
-    tictacButtonList = addButton();
+    users.doc('player').get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        activePlayer = documentSnapshot['activePlayer'];
+        debugPrint("active Player$activePlayer");
+      }
+    });
+    ticTacButtonList = addButton();
     super.onInit();
   }
 
   RxList<TicTacButton> addButton() {
-    player1 = [];
-    player2 = [];
-    activeplayer = 1;
+    // activePlayer = 2;
 
-    RxList<TicTacButton> tictacButtons = [
+    RxList<TicTacButton> ticTacButtons = [
+      TicTacButton(id: 0),
       TicTacButton(id: 1),
       TicTacButton(id: 2),
       TicTacButton(id: 3),
@@ -34,44 +44,61 @@ class HumanController extends GetxController {
       TicTacButton(id: 6),
       TicTacButton(id: 7),
       TicTacButton(id: 8),
-      TicTacButton(id: 9),
     ].obs;
-    return tictacButtons;
+    return ticTacButtons;
   }
 
   void startGame(int index, context) {
-    if (activeplayer == 1) {
-      tictacButtonList[index].txt = 'X';
-      tictacButtonList[index].bg = Colors.red;
-      activeplayer = 2;
-      player1.add(tictacButtonList[index].id);
+    users.doc('player').get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        activePlayer = documentSnapshot['activePlayer'];
+        debugPrint("active Player$activePlayer");
+      }
+    });
 
-      tictacButtonList.refresh();
-      debugPrint("Player 1 Index ${player1.length}");
-    } else if (activeplayer == 2) {
-      tictacButtonList[index].txt = 'O';
-      tictacButtonList[index].bg = Colors.blue;
-      activeplayer = 1;
-      player2.add(tictacButtonList[index].id);
-      tictacButtonList.refresh();
+    if (activePlayer == 1) {
+      board.doc('$index').update({'text': 'X'});
 
-      debugPrint("Player 2 Index ${player2.length}");
+      board.doc('$index').get().then((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          ticTacButtonList[index].text = documentSnapshot['text'];
+          debugPrint("active Player${ticTacButtonList[index].text}");
+        }
+      });
+      ticTacButtonList[index].bg = Colors.red;
+      users.doc('player').update({'activePlayer': 2});
+
+      ticTacButtonList.refresh();
+    } else if (activePlayer == 2) {
+      board.doc('$index').update({'text': '0'});
+      ticTacButtonList[index].bg = Colors.blue;
+      users.doc('player').update({'activePlayer': 1}); //1st player ar ID Hobe
+      board.doc('$index').get().then((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          ticTacButtonList[index].text = documentSnapshot['text'];
+          debugPrint(
+              "active Playerrrrrrrrrrrrrrrrrrrrrr${ticTacButtonList[index].text}");
+        }
+      });
+
+      ticTacButtonList.refresh();
     }
-    tictacButtonList[index].enable = false;
+    ticTacButtonList[index].enable = false;
 
     int winnerName = winner(context);
     debugPrint("Winnername$winnerName");
 
     if (winnerName == -1) {
-      if (tictacButtonList.every((p) => p.txt != "")) {
-        for (int i = 0; i < tictacButtonList.length; i++) {
-          debugPrint("dgdgd${tictacButtonList[i].txt}");
+      if (ticTacButtonList.every((p) => p.text != "")) {
+        for (int i = 0; i < ticTacButtonList.length; i++) {
+          //ata kal dekha jabe
+          debugPrint("dgdgd${ticTacButtonList[i].text}");
         }
 
         showDialog(
             context: context,
             builder: (_) => CustomDialog(
-              "Match Draw",
+                  "Match Draw",
                   "Press the reset button to star again",
                 ));
       }
@@ -80,98 +107,138 @@ class HumanController extends GetxController {
 
   int winner(context) {
     var winner = -1;
-    if (player1.contains(1) && player1.contains(2) && player1.contains(3)) {
+
+    if (ticTacButtonList[0].text == 'X' &&
+        ticTacButtonList[1].text == 'X' &&
+        ticTacButtonList[2].text == 'X') {
+      //player 1 read from Database
+      winner = 1; //player1 Id
+    }
+    if (ticTacButtonList[0].text == '0' &&
+        ticTacButtonList[1].text == '0' &&
+        ticTacButtonList[2].text == '0') {
+      //player 2 read from Database
+      winner = 2; // player 2 Id
+    }
+
+    if (ticTacButtonList[4].text == 'X' &&
+        ticTacButtonList[5].text == 'X' &&
+        ticTacButtonList[3].text == 'X') {
       winner = 1;
     }
-    if (player2.contains(1) && player2.contains(2) && player2.contains(3)) {
+    if (ticTacButtonList[4].text == '0' &&
+        ticTacButtonList[5].text == '0' &&
+        ticTacButtonList[3].text == '0') {
       winner = 2;
     }
 
-    if (player1.contains(4) && player1.contains(5) && player1.contains(6)) {
+    if (ticTacButtonList[7].text == 'X' &&
+        ticTacButtonList[8].text == 'X' &&
+        ticTacButtonList[6].text == 'X') {
       winner = 1;
     }
-    if (player2.contains(4) && player2.contains(5) && player2.contains(6)) {
+    if (ticTacButtonList[7].text == '0' &&
+        ticTacButtonList[8].text == '0' &&
+        ticTacButtonList[6].text == '0') {
       winner = 2;
     }
 
-    if (player1.contains(7) && player1.contains(8) && player1.contains(9)) {
+    if (ticTacButtonList[0].text == 'X' &&
+        ticTacButtonList[3].text == 'X' &&
+        ticTacButtonList[6].text == 'X') {
       winner = 1;
     }
-    if (player2.contains(7) && player2.contains(8) && player2.contains(9)) {
+    if (ticTacButtonList[0].text == '0' &&
+        ticTacButtonList[3].text == '0' &&
+        ticTacButtonList[6].text == '0') {
       winner = 2;
     }
 
-    if (player1.contains(1) && player1.contains(4) && player1.contains(7)) {
+    if (ticTacButtonList[1].text == 'X' &&
+        ticTacButtonList[4].text == 'X' &&
+        ticTacButtonList[7].text == 'X') {
       winner = 1;
     }
-    if (player2.contains(1) && player2.contains(4) && player2.contains(7)) {
+    if (ticTacButtonList[1].text == '0' &&
+        ticTacButtonList[4].text == '0' &&
+        ticTacButtonList[7].text == '0') {
       winner = 2;
     }
 
-    if (player1.contains(2) && player1.contains(5) && player1.contains(8)) {
+    if (ticTacButtonList[5].text == 'X' &&
+        ticTacButtonList[2].text == 'X' &&
+        ticTacButtonList[8].text == 'X') {
       winner = 1;
     }
-    if (player2.contains(2) && player2.contains(5) && player2.contains(8)) {
+    if (ticTacButtonList[2].text == '0' &&
+        ticTacButtonList[5].text == '0' &&
+        ticTacButtonList[8].text == '0') {
       winner = 2;
     }
 
-    if (player1.contains(6) && player1.contains(3) && player1.contains(9)) {
+    if (ticTacButtonList[0].text == 'X' &&
+        ticTacButtonList[4].text == 'X' &&
+        ticTacButtonList[8].text == 'X') {
       winner = 1;
     }
-    if (player2.contains(6) && player2.contains(3) && player2.contains(9)) {
+    if (ticTacButtonList[0].text == '0' &&
+        ticTacButtonList[4].text == '0' &&
+        ticTacButtonList[8].text == '0') {
       winner = 2;
     }
 
-    if (player1.contains(1) && player1.contains(5) && player1.contains(9)) {
+    if (ticTacButtonList[4].text == 'X' &&
+        ticTacButtonList[2].text == 'X' &&
+        ticTacButtonList[6].text == 'X') {
       winner = 1;
     }
-    if (player2.contains(1) && player2.contains(5) && player2.contains(9)) {
+    if (ticTacButtonList[4].text == '0' &&
+        ticTacButtonList[2].text == '0' &&
+        ticTacButtonList[6].text == '0') {
       winner = 2;
     }
+    users.doc('player').update({'winner': winner});
 
-    if (player1.contains(5) && player1.contains(3) && player1.contains(7)) {
-      winner = 1;
-    }
-    if (player2.contains(5) && player2.contains(3) && player2.contains(7)) {
-      winner = 2;
-    }
-
-    if (winner != -1) {
-      if (winner == 1) {
-        debugPrint("Winner player 1");
-        // Custom dialog
-        showDialog(
-            context: context,
-            builder: (_) => CustomDialog(
-                  "Player 1 won",
-                  "Press the reset button to start again",
-                ));
-      } else {
-        debugPrint("Winner player 2");
-        // custom dailog
-        showDialog(
-            context: context,
-            builder: (_) => CustomDialog(
-                  "Player 2 won",
-                  "Press the reset button to start again",
-                ));
+    users.doc('player').get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        winnerCheck = documentSnapshot['winner'];
+        debugPrint("winnerCheck${winnerCheck.runtimeType}");
+        if (winnerCheck==1) {
+          //! ar jaygay Player 1ar ID hobe
+          debugPrint("Winner player 1");
+          // Custom dialog
+          showDialog(
+              context: context,
+              builder: (_) => CustomDialog(
+                "Player 1 won",
+                "Press the reset button to start again",
+              ));
+        } else if (winnerCheck == 2) {
+          debugPrint("Winner player 2");
+          // custom dailog
+          showDialog(
+              context: context,
+              builder: (_) => CustomDialog(
+                "Player 2 won",
+                "Press the reset button to start again",
+              ));
+        }
       }
-    }
+    });
+    debugPrint("winnerChechbbfv${winnerCheck.runtimeType}");
+
+
+
 
     return winner;
   }
 
   resetGame(context) {
-    // if (Navigator.canPop(context)) Navigator.pop(context);
-
-    // Get.toNamed(Routes.HUMAN);
-    tictacButtonList.clear();
+    ticTacButtonList.clear();
     onInit();
-
-    //tictacButtonList = addButton();
   }
 
   modeChange(context) {
-    if (Navigator.canPop(context)) Navigator.pop(context);
+    Get.back();
   }
 }

@@ -20,7 +20,6 @@ class HumanView extends GetView<HumanController> {
             onConnectionStatusChanged: (connected) {
               /// that means it is still in the initialization phase.
               if (connected == null) return;
-              print(connected);
             },
             connected: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -30,7 +29,7 @@ class HumanView extends GetView<HumanController> {
                     width: 500,
                     height: 500,
                     child: GridView.builder(
-                      itemCount: controller.tictacButtonList.length,
+                      itemCount: controller.ticTacButtonList.length,//ata hobe read kora new List
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 3,
@@ -38,13 +37,13 @@ class HumanView extends GetView<HumanController> {
                               crossAxisSpacing: 10,
                               childAspectRatio: 1),
                       itemBuilder: (BuildContext context, int index) {
-                        debugPrint("${controller.tictacButtonList[index]}");
+                        debugPrint("${controller.ticTacButtonList[index]}");
                         return SizedBox(
                           height: 100,
                           width: 100,
                           child: ElevatedButton(
                             onPressed: () {
-                              controller.tictacButtonList[index].enable
+                              controller.ticTacButtonList[index].enable
                                   ? controller.startGame(index, context)
                                   : null;
                             },
@@ -52,12 +51,12 @@ class HumanView extends GetView<HumanController> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0)),
                               backgroundColor:
-                                  controller.tictacButtonList[index].bg,
+                                  controller.ticTacButtonList[index].bg,
                               disabledBackgroundColor:
-                                  controller.tictacButtonList[index].bg,
+                                  controller.ticTacButtonList[index].bg,
                             ),
                             child: Text(
-                              controller.tictacButtonList[index].txt,
+                              controller.ticTacButtonList[index].text,
                               style: const TextStyle(
                                   color: Colors.white, fontSize: 40),
                             ),

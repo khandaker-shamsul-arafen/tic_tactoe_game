@@ -12,14 +12,13 @@ class SinglePlayerView extends GetView<SinglePlayerController> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Play  With  AI '),
+          title: const Text('Play  With  Computer '),
           centerTitle: true,
         ),
         body: ConnectionNotifierToggler(
             onConnectionStatusChanged: (connected) {
               /// that means it is still in the initialization phase.
               if (connected == null) return;
-              print(connected);
             },
             connected: Column(
               children: [
@@ -36,30 +35,28 @@ class SinglePlayerView extends GetView<SinglePlayerController> {
                               crossAxisSpacing: 10,
                               mainAxisSpacing: 10,
                               childAspectRatio: 1),
-                      itemCount: controller.board!.length,
+                      itemCount: controller.board?.length ?? 0,
                       itemBuilder: (context, index) {
                         return GestureDetector(
-                          // wrap each cell with GestureDetector to handle user input
                           onTap: () {
-                            controller.makeMove(index,
-                                context); // handle user input by calling the game logic
+                            controller.makeMove(index, context);
                           },
                           child: Container(
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: controller.board![index] == 'O'
+                              color: controller.board?[index] == 'O'
                                   ? Colors.blue
-                                  : controller.board![index] == 'X'
+                                  : controller.board?[index] == 'X'
                                       ? Colors.red
                                       : Colors.grey,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                              controller.board![index],
+                              controller.board?[index] ?? "",
                               style: TextStyle(
                                 fontSize: 40,
-                                color: controller.board![index] == 'X' ||
-                                        controller.board![index] == 'O'
+                                color: controller.board?[index] == 'X' ||
+                                        controller.board?[index] == 'O'
                                     ? Colors.white
                                     : Colors.black,
                               ),
