@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class TicTacButton {
   final id;
-  String txt;
+  String text;
   bool enable;
   Color bg;
 
   TicTacButton(
-      {this.id, this.txt = "", this.enable = true, this.bg = Colors.grey});
+      {this.id, this.text = "", this.enable = true, this.bg = Colors.grey});
 }

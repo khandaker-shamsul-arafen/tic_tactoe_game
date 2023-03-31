@@ -1,41 +1,33 @@
 {
   "project_info": {
-    "project_number": "504609251212",
-    "project_id": "tictactoe-c3732",
-    "storage_bucket": "tictactoe-c3732.appspot.com"
+    "project_number": "299718549860",
+    "project_id": "tictactoe-bc962",
+    "storage_bucket": "tictactoe-bc962.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:504609251212:android:755960965069ef420500a9",
+        "mobilesdk_app_id": "1:299718549860:android:f6ccfd0479dcf1cd891a71",
         "android_client_info": {
           "package_name": "com.example.tictac"
         }
       },
       "oauth_client": [
         {
-          "client_id": "504609251212-tfoht0lmc0t33717ol6c6krbbr1v5o1k.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.tictac",
-            "certificate_hash": "a0af245152cd075c1909012cc3b5d1703efb131a"
-          }
-        },
-        {
-          "client_id": "504609251212-heeqmceun83l9iot5hl8bulm5qbmj3a2.apps.googleusercontent.com",
+          "client_id": "299718549860-2v7k9vf2ijvrb4qldvbige47748dodci.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBckNsHKMphtvvceA9jXz5GgzHpz3kc96A"
+          "current_key": "AIzaSyBED8q7YptFFbvconTNoEaXHVGmzDtkmzs"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "504609251212-heeqmceun83l9iot5hl8bulm5qbmj3a2.apps.googleusercontent.com",
+              "client_id": "299718549860-2v7k9vf2ijvrb4qldvbige47748dodci.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
