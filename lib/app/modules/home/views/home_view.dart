@@ -88,7 +88,7 @@ class HomeView extends GetView<HomeController> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          Get.toNamed(Routes.HUMAN);
+                          Get.toNamed(Routes.HUMAN2);
                         },
                         style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.red),
